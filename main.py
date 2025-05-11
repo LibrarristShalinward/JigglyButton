@@ -1,4 +1,4 @@
-from jiggly import Button
+from jiggly import Button, ButtonHandler
 import dearpygui.dearpygui as dpg
 import ctypes
 
@@ -39,10 +39,9 @@ with dpg.window(label = "Center Button Demo", tag = "Primary Window"):
         font = custom_font,
         label = "Center",
         tag = "center_btn"
-    ).item
+    )
 
 # 应用自定义主题到按钮
-dpg.bind_item_theme(button, button_theme)
 dpg.bind_item_theme("Primary Window", window_theme)
 
 # 视口设置
@@ -57,39 +56,7 @@ dpg.set_primary_window("Primary Window", True)
 
 
 
-class ButtonHandler: 
-    def __init__(self):
-        self.hovered = False
-        self.clicked = False
-        self.opened = False
-    
-    def __call__(self): 
-        if not self.hovered and dpg.is_item_hovered("center_btn"): 
-            self.hovered = True
-        elif self.hovered and not dpg.is_item_hovered("center_btn"): 
-            self.hovered = False
-        else: pass
 
-        if not self.clicked and dpg.is_item_active("center_btn"): 
-            self.clicked = True
-        elif self.clicked and not dpg.is_item_active("center_btn"): 
-            self.clicked = False
-            self.opened = not self.opened
-        else: pass
-
-        if self.clicked: 
-            self.set_button_size(200)
-        elif self.hovered: 
-            self.set_button_size(190)
-        elif self.opened: 
-            self.set_button_size(180)
-        else: 
-            self.set_button_size(160)
-    
-    def set_button_size(self, size: float = 180.): 
-        dpg.set_item_width(button, size)
-        dpg.set_item_height(button, size)
-        dpg.set_item_pos(button, (450 - size / 2, 300 - size / 2))
 
 
 
@@ -98,7 +65,10 @@ class ButtonHandler:
 
 
 # 主循环
-bh = ButtonHandler()
+bh = ButtonHandler(
+    button.item, 
+    button.set_size
+)
 while True:
     bh()
     dpg.render_dearpygui_frame()

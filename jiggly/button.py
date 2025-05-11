@@ -31,3 +31,11 @@ class JigglyButton:
             dpg.bind_item_theme(self.item, theme)
         if font is not None: 
             dpg.set_item_font(self.item, font)
+    
+    def set_size(self, size: float): 
+        dpg.set_item_width(self.item, size)
+        dpg.set_item_height(self.item, size)
+        dpg.set_item_pos(self.item, (
+            int(self.center[0] - size / 2), 
+            int(self.center[1] - size / 2),
+        ))
