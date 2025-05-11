@@ -27,3 +27,9 @@ class Process(Generic[T], ABC):
 class ConstantProcess(Process[T]): 
     def func(self, t: float) -> T: 
         return 0.
+
+
+
+class LinearProcess(Process[T]): 
+    def func(self, t: float) -> T: 
+        return (t / self.time) * self.end

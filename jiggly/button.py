@@ -1,9 +1,33 @@
-from .dynamic import DynamicValue, ConstantProcess
+from .dynamic import DynamicValue, LinearProcess
 from .handler import ButtonHandler
 from .type import DPGID, Incident
 import dearpygui.dearpygui as dpg
 
 
+
+class AnimeConfig: 
+    def __init__(self, 
+                hover_delay: float = 0.1, 
+                switch_delay: float = 0.2, 
+                jig_delay: float = 1., 
+                hover_buffer: float = 10., 
+                press_buffer: float = 15., 
+                open_buffer: float = 15., 
+            ):
+        HD = hover_delay
+        SD = switch_delay
+        JD = jig_delay
+        HB = hover_buffer
+        PB = press_buffer
+        OB = open_buffer + press_buffer
+        self.ani_config = {
+            Incident.HOVER_ON: (HD, HB), 
+            Incident.HOVER_OFF: (HD, -HB), 
+            Incident.CLICK_ON_AC: (SD, PB), 
+            Incident.CLICK_OFF_AC: (JD, -OB), 
+            Incident.CLICK_ON_DE: (SD, OB), 
+            Incident.CLICK_OFF_DE: (JD, -PB), 
+        }
 
 class JigglyButton: 
     def __init__(self, 
@@ -11,6 +35,7 @@ class JigglyButton:
                 pos: tuple[float, float], 
                 theme: None | DPGID = None, 
                 font: None | DPGID = None, 
+                ani: AnimeConfig = AnimeConfig(), 
                 **kwargs
             ): 
         """创建一个Q弹的按钮
@@ -37,21 +62,13 @@ class JigglyButton:
             dpg.set_item_font(self.item, font)
         
         self.dy_size = DynamicValue(size)
+        def make_callback(inc): 
+            return lambda: self.dy_size[LinearProcess](*ani.ani_config[inc])
         self.handler = ButtonHandler(
             self.item, 
             {
-                Incident.HOVER_ON: 
-                    lambda: self.dy_size[ConstantProcess](.3, 10.), 
-                Incident.HOVER_OFF: 
-                    lambda: self.dy_size[ConstantProcess](.3, -10.), 
-                Incident.CLICK_ON_AC: 
-                    lambda: self.dy_size[ConstantProcess](.3, 15.), 
-                Incident.CLICK_OFF_AC: 
-                    lambda: self.dy_size[ConstantProcess](.3, -30.), 
-                Incident.CLICK_ON_DE: 
-                    lambda: self.dy_size[ConstantProcess](.3, 30.), 
-                Incident.CLICK_OFF_DE: 
-                    lambda: self.dy_size[ConstantProcess](.3, -15.), 
+                inc: make_callback(inc)
+                for inc in Incident
             }
         )
     
