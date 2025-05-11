@@ -1,6 +1,9 @@
+from .dynamic import DynamicValue, ConstantProcess
 from .handler import ButtonHandler
 from .type import DPGID, Incident
 import dearpygui.dearpygui as dpg
+
+
 
 class JigglyButton: 
     def __init__(self, 
@@ -33,21 +36,22 @@ class JigglyButton:
         if font is not None: 
             dpg.set_item_font(self.item, font)
         
+        self.dy_size = DynamicValue(size)
         self.handler = ButtonHandler(
             self.item, 
             {
                 Incident.HOVER_ON: 
-                    lambda: self.set_size(190.), 
+                    lambda: self.dy_size[ConstantProcess](.3, 10.), 
                 Incident.HOVER_OFF: 
-                    lambda: self.set_size(180. if self.handler.opened else 160.), 
+                    lambda: self.dy_size[ConstantProcess](.3, -10.), 
                 Incident.CLICK_ON_AC: 
-                    lambda: self.set_size(200.), 
+                    lambda: self.dy_size[ConstantProcess](.3, 15.), 
                 Incident.CLICK_OFF_AC: 
-                    lambda: self.set_size(190. if self.handler.hovered else 180.), 
+                    lambda: self.dy_size[ConstantProcess](.3, -30.), 
                 Incident.CLICK_ON_DE: 
-                    lambda: self.set_size(200.), 
+                    lambda: self.dy_size[ConstantProcess](.3, 30.), 
                 Incident.CLICK_OFF_DE: 
-                    lambda: self.set_size(190. if self.handler.hovered else 160.),
+                    lambda: self.dy_size[ConstantProcess](.3, -15.), 
             }
         )
     
@@ -59,5 +63,6 @@ class JigglyButton:
             int(self.center[1] - size / 2),
         ))
     
-    def __call__(self):
+    def __call__(self): 
+        self.set_size(self.dy_size.value)
         self.handler()
