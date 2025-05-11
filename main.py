@@ -1,4 +1,4 @@
-from jiggly import Button, ButtonHandler
+from jiggly import Button
 import dearpygui.dearpygui as dpg
 import ctypes
 
@@ -65,12 +65,8 @@ dpg.set_primary_window("Primary Window", True)
 
 
 # 主循环
-bh = ButtonHandler(
-    button.item, 
-    button.set_size
-)
 while True:
-    bh()
+    button()
     dpg.render_dearpygui_frame()
 dpg.cleanup_dearpygui()
 dpg.destroy_context()

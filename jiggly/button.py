@@ -1,4 +1,5 @@
-from .type import DPGID
+from .handler import ButtonHandler
+from .type import DPGID, Incident
 import dearpygui.dearpygui as dpg
 
 class JigglyButton: 
@@ -31,6 +32,24 @@ class JigglyButton:
             dpg.bind_item_theme(self.item, theme)
         if font is not None: 
             dpg.set_item_font(self.item, font)
+        
+        self.handler = ButtonHandler(
+            self.item, 
+            {
+                Incident.HOVER_ON: 
+                    lambda: self.set_size(190.), 
+                Incident.HOVER_OFF: 
+                    lambda: self.set_size(180. if self.handler.opened else 160.), 
+                Incident.CLICK_ON_AC: 
+                    lambda: self.set_size(200.), 
+                Incident.CLICK_OFF_AC: 
+                    lambda: self.set_size(190. if self.handler.hovered else 180.), 
+                Incident.CLICK_ON_DE: 
+                    lambda: self.set_size(200.), 
+                Incident.CLICK_OFF_DE: 
+                    lambda: self.set_size(190. if self.handler.hovered else 160.),
+            }
+        )
     
     def set_size(self, size: float): 
         dpg.set_item_width(self.item, size)
@@ -39,3 +58,6 @@ class JigglyButton:
             int(self.center[0] - size / 2), 
             int(self.center[1] - size / 2),
         ))
+    
+    def __call__(self):
+        self.handler()
