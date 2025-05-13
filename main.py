@@ -28,7 +28,7 @@ with dpg.theme() as button_theme:
         dpg.add_theme_color(dpg.mvThemeCol_Button, (78, 164, 239, 255))  # 按钮颜色
         dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (78, 164, 239, 255))  # 悬停颜色
         dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (78, 164, 239, 255))  # 按下颜色
-        dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 15)  # 圆角半径
+        round_item = dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 15)  # 圆角半径
 
 # 创建主窗口
 with dpg.window(label = "Center Button Demo", tag = "Primary Window"):
@@ -37,6 +37,7 @@ with dpg.window(label = "Center Button Demo", tag = "Primary Window"):
         pos = (450, 300),
         theme = button_theme,
         font = custom_font,
+        round = round_item, 
         label = "Click",
         tag = "center_btn"
     )

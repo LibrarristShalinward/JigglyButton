@@ -35,6 +35,7 @@ class JigglyButton:
                 pos: tuple[float, float], 
                 theme: None | DPGID = None, 
                 font: None | DPGID = None, 
+                round: None | DPGID = None, 
                 ani: AnimeConfig = AnimeConfig(), 
                 **kwargs
             ): 
@@ -60,6 +61,10 @@ class JigglyButton:
             dpg.bind_item_theme(self.item, theme)
         if font is not None: 
             dpg.set_item_font(self.item, font)
+        self.given_round = round is not None
+        if self.given_round: 
+            self.round_item = round
+            self.round_edge_ratio = dpg.get_value(round)[0] / size
         
         self.dy_size = DynamicValue(size)
         def make_callback(inc): 
@@ -86,6 +91,13 @@ class JigglyButton:
             int(self.center[0] - size / 2), 
             int(self.center[1] - size / 2),
         ))
+        dpg.set_value(
+            self.round_item, 
+            [
+                size * self.round_edge_ratio, 
+                -1.
+            ]
+        )
     
     def __call__(self): 
         self.set_size(self.dy_size.value)
