@@ -33,11 +33,11 @@ with dpg.theme() as button_theme:
 # 创建主窗口
 with dpg.window(label = "Center Button Demo", tag = "Primary Window"):
     button = Button(
-        size = 180,
+        size = 120.,
         pos = (450, 300),
         theme = button_theme,
         font = custom_font,
-        label = "Center",
+        label = "Click",
         tag = "center_btn"
     )
 

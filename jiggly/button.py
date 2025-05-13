@@ -1,4 +1,4 @@
-from .dynamic import DynamicValue, LinearProcess
+from .dynamic import CosineProcess, DampProcess, DynamicValue
 from .handler import ButtonHandler
 from .type import DPGID, Incident
 import dearpygui.dearpygui as dpg
@@ -7,12 +7,12 @@ import dearpygui.dearpygui as dpg
 
 class AnimeConfig: 
     def __init__(self, 
-                hover_delay: float = 0.1, 
-                switch_delay: float = 0.2, 
-                jig_delay: float = 1., 
+                hover_delay: float = .1, 
+                switch_delay: float = .1, 
+                jig_delay: float = .5, 
                 hover_buffer: float = 10., 
-                press_buffer: float = 15., 
-                open_buffer: float = 15., 
+                press_buffer: float = 5., 
+                open_buffer: float = 60., 
             ):
         HD = hover_delay
         SD = switch_delay
@@ -63,7 +63,14 @@ class JigglyButton:
         
         self.dy_size = DynamicValue(size)
         def make_callback(inc): 
-            return lambda: self.dy_size[LinearProcess](*ani.ani_config[inc])
+            if inc in [Incident.CLICK_OFF_AC, Incident.CLICK_OFF_DE]: 
+                return lambda: self.dy_size[
+                    DampProcess
+                ](*ani.ani_config[inc])
+            else: 
+                return lambda: self.dy_size[
+                    CosineProcess
+                ](*ani.ani_config[inc])
         self.handler = ButtonHandler(
             self.item, 
             {
